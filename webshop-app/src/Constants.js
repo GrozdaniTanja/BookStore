@@ -1,1 +1,1 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "https://book-store-backend-rust.vercel.app/";

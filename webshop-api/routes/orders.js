@@ -1,11 +1,17 @@
 const express = require("express");
 const fs = require("fs");
-const router = express.Router();
+const path = require("path");
 const uuid = require("uuid");
 const cors = require("cors");
+const router = express.Router();
+
+// Construct absolute paths for the JSON files
+const ordersFilePath = path.join(__dirname, "../data/orders.json");
+const usersFilePath = path.join(__dirname, "../data/users.json");
+const productsFilePath = path.join(__dirname, "../data/books.json");
 
 router.get("/", cors(), function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
+  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   if (orders) {
     res.status(200).json(orders);
   } else {
@@ -14,7 +20,7 @@ router.get("/", cors(), function (req, res, next) {
 });
 
 router.get("/:id", cors(), function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
+  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {
     res.status(200).json(order);
@@ -24,16 +30,17 @@ router.get("/:id", cors(), function (req, res, next) {
 });
 
 router.get("/user/:id", cors(), function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
+  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let userOrders = orders.filter((order) => order["user_id"] == req.params.id);
   res.status(200).json(userOrders);
 });
 
 router.post("/", cors(), function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
-  let products = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
+  let products = JSON.parse(fs.readFileSync(productsFilePath, "utf8"));
   let user = users.find((user) => user.id == req.body.data.user);
+
   if (
     req.body.data.delivery_address.street &&
     req.body.data.delivery_address.suite &&
@@ -84,12 +91,12 @@ router.post("/", cors(), function (req, res, next) {
         }
       }
     }
-    fs.writeFile("./data/orders.json", JSON.stringify(orders), function (err) {
+    fs.writeFile(ordersFilePath, JSON.stringify(orders), function (err) {
       if (err) {
         throw err;
       } else {
         fs.writeFile(
-          "./data/books.json",
+          productsFilePath,
           JSON.stringify(products),
           function (err) {
             if (err) {
@@ -109,23 +116,21 @@ router.post("/", cors(), function (req, res, next) {
 });
 
 router.delete("/:id", cors(), function (req, res) {
-  let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
+  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {
     let updatedOrders = orders.filter((order) => order.id != req.params.id);
-    fs.writeFile(
-      "./data/orders.json",
-      JSON.stringify(updatedOrders),
-      function (err) {
-        if (err) {
-          throw err;
-        } else {
-          res.status(200).send({
-            message: `Deleting order ${req.params.id}`,
-          });
-        }
+    fs.writeFile(ordersFilePath, JSON.stringify(updatedOrders), function (err) {
+      if (err) {
+        throw err;
+      } else {
+        res.status(200).send({
+          message: `Deleting order ${req.params.id}`,
+        });
       }
-    );
+    });
+  } else {
+    res.status(404).send({ message: "Order not found" });
   }
 });
 
