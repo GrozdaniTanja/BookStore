@@ -1,10 +1,14 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path"); // Add the path module
 const router = express.Router();
 const cors = require("cors");
 
+// Construct absolute path for the users JSON file
+const usersFilePath = path.join(__dirname, "../data/users.json");
+
 router.post("/login", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   let user = users.find(
     (user) =>
       user.email === req.body.email && user.password === req.body.password
@@ -18,7 +22,7 @@ router.post("/login", cors(), function (req, res, next) {
 });
 
 router.post("/register", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   if (
     req.body.name &&
     req.body.username &&
@@ -48,7 +52,7 @@ router.post("/register", cors(), function (req, res, next) {
       res.status(403).send({ message: "User already exist." });
     } else {
       users.push(user);
-      fs.writeFile("./data/users.json", JSON.stringify(users), function (err) {
+      fs.writeFile(usersFilePath, JSON.stringify(users), function (err) {
         if (err) {
           throw err;
         } else {
