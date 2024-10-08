@@ -1,12 +1,13 @@
 const express = require("express");
 const fs = require("fs");
 const router = express.Router();
+const cors = require("cors");
 
-router.post("/login", function (req, res, next) {
+router.post("/login", cors(), function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   let user = users.find(
     (user) =>
-      user.email === req.body.email && user.password === req.body.password,
+      user.email === req.body.email && user.password === req.body.password
   );
   if (user) {
     res.status(200).json(user);
@@ -16,7 +17,7 @@ router.post("/login", function (req, res, next) {
   }
 });
 
-router.post("/register", function (req, res, next) {
+router.post("/register", cors(), function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   if (
     req.body.name &&
@@ -39,46 +40,25 @@ router.post("/register", function (req, res, next) {
       },
       phone: "",
     };
-    if (validateUser(user)) {
-      let verifyUser = users.find(
-        (item) => item.username == user.username || item.email == user.email,
-      );
-      if (verifyUser) {
-        res.status(403).send({ message: "User already exist." });
-      } else {
-        users.push(user);
-        fs.writeFile(
-          "./data/users.json",
-          JSON.stringify(users),
-          function (err) {
-            if (err) {
-              throw err;
-            } else {
-              res.send({ message: "Successfully registered" });
-            }
-          },
-        );
-      }
+
+    let verifyUser = users.find(
+      (item) => item.username == user.username || item.email == user.email
+    );
+    if (verifyUser) {
+      res.status(403).send({ message: "User already exist." });
     } else {
-      res.status(400).send({ message: "Bad request" });
+      users.push(user);
+      fs.writeFile("./data/users.json", JSON.stringify(users), function (err) {
+        if (err) {
+          throw err;
+        } else {
+          res.send({ message: "Successfully registered" });
+        }
+      });
     }
   } else {
     res.status(400).send({ message: "Please complete all fields" });
   }
 });
-
-function validateUser(user) {
-  const regexLetters = /(^[A-Za-z]{2,30})([ ]{0,1})([A-Za-z]{2,30})/;
-  const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-  const regexPassword = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-  const regexUsername = /^[a-z0-9_-]{3,16}$/gim;
-
-  return (
-    user.name.match(regexLetters) &&
-    user.username.match(regexUsername) &&
-    user.email.match(regexEmail) &&
-    user.password.match(regexPassword)
-  );
-}
 
 module.exports = router;

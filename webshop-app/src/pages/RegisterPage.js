@@ -201,7 +201,6 @@ function RegisterPage() {
                       placeholder="Password"
                       value={inputs.password}
                       onChange={handleChange}
-                      pattern="^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$"
                       required
                     />
                     <Form.Control.Feedback type="invalid">

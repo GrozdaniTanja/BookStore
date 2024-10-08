@@ -11,7 +11,7 @@ function User({ id, name, username, email, role, address, phone, getUsers }) {
   };
 
   const deleteUser = () => {
-    fetch("https://book-store-backend-rust.vercel.app/users/" + idToDelete, {
+    fetch("http://localhost:3001/users/" + idToDelete, {
       method: "DELETE",
     }).then(function () {
       getUsers();

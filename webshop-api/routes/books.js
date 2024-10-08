@@ -1,18 +1,20 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path"); // Import the path module
-const { ServerResponse } = require("http");
 const router = express.Router();
+const cors = require("cors");
 
 // Define the path to the data directory
 const dataDirectory = path.join(__dirname, "../data");
 
 // Function to read books from the JSON file
 function readBooksFromFile() {
-  return JSON.parse(fs.readFileSync(path.join(dataDirectory, "books.json"), "utf8"));
+  return JSON.parse(
+    fs.readFileSync(path.join(dataDirectory, "books.json"), "utf8")
+  );
 }
 
-router.get("/", function (req, res, next) {
+router.get("/", cors(), function (req, res, next) {
   // get books array
   let books = readBooksFromFile();
   if (books) {
@@ -22,7 +24,7 @@ router.get("/", function (req, res, next) {
     let filters = {};
     filters.type = Array.from(arrayCheckboxes("category", books));
     filters.publishing_house = Array.from(
-      arrayCheckboxes("publishing_house", books),
+      arrayCheckboxes("publishing_house", books)
     );
 
     // set selected filters from query
@@ -47,7 +49,7 @@ router.get("/", function (req, res, next) {
     let products = filterProducts(
       books,
       filterFunction,
-      getSorted(req.query.sort),
+      getSorted(req.query.sort)
     );
 
     let response = {
@@ -62,7 +64,7 @@ router.get("/", function (req, res, next) {
   }
 });
 
-router.get("/:id", function (req, res, next) {
+router.get("/:id", cors(), function (req, res, next) {
   let content = readBooksFromFile();
   let book = content.find((item) => item["name"] == req.params.id);
   if (book) {
@@ -103,7 +105,7 @@ router.post("/", function (req, res, next) {
         (item) =>
           item.name == product.name &&
           item.category == product.category &&
-          item.author == product.author,
+          item.author == product.author
       );
       if (verifyProduct) {
         res.status(403).send({ message: "Product already exists." });
@@ -120,7 +122,7 @@ router.post("/", function (req, res, next) {
                 message: `Adding book ${req.body.name}`,
               });
             }
-          },
+          }
         );
       }
     } else {
@@ -132,7 +134,7 @@ router.post("/", function (req, res, next) {
 });
 
 // delete
-router.delete("/:id", function (req, res) {
+router.delete("/:id", cors(), function (req, res) {
   let books = readBooksFromFile();
   let book = books.find((book) => book.id == req.params.id);
   if (book) {
@@ -148,13 +150,13 @@ router.delete("/:id", function (req, res) {
             message: `Deleting book ${req.params.id}`,
           });
         }
-      },
+      }
     );
   }
 });
 
 // update
-router.put("/:id", function (req, res, next) {
+router.put("/:id", cors(), function (req, res, next) {
   let products = readBooksFromFile();
   let book = products.find((book) => book.id == req.params.id);
   if (book) {
@@ -181,7 +183,7 @@ router.put("/:id", function (req, res, next) {
               message: `Updating book ${req.body.name}`,
             });
           }
-        },
+        }
       );
     } else {
       res.status(400).send({ message: "Bad request" });

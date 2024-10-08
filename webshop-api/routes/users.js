@@ -2,9 +2,10 @@ const { response } = require("express");
 let express = require("express");
 const fs = require("fs");
 let router = express.Router();
+const cors = require("cors");
 
 /* GET users listing. */
-router.get("/", function (req, res, next) {
+router.get("/", cors(), function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   if (users) {
     res.status(200).json(users);
@@ -13,7 +14,7 @@ router.get("/", function (req, res, next) {
   }
 });
 
-router.get("/:id", function (req, res, next) {
+router.get("/:id", cors(), function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   let user = users.find((user) => user.id == req.params.id);
   if (user) {
@@ -23,7 +24,7 @@ router.get("/:id", function (req, res, next) {
   }
 });
 
-router.delete("/:id", function (req, res) {
+router.delete("/:id", cors(), function (req, res) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   let user = users.find((user) => user.id == req.params.id);
   if (user) {
@@ -37,12 +38,12 @@ router.delete("/:id", function (req, res) {
         } else {
           res.status(200).send({ message: `Deleting user ${req.params.id}` });
         }
-      },
+      }
     );
   }
 });
 
-router.put("/:id", function (req, res, next) {
+router.put("/:id", cors(), function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
 
   // loop through all users

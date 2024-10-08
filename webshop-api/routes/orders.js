@@ -2,8 +2,9 @@ const express = require("express");
 const fs = require("fs");
 const router = express.Router();
 const uuid = require("uuid");
+const cors = require("cors");
 
-router.get("/", function (req, res, next) {
+router.get("/", cors(), function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
   if (orders) {
     res.status(200).json(orders);
@@ -12,7 +13,7 @@ router.get("/", function (req, res, next) {
   }
 });
 
-router.get("/:id", function (req, res, next) {
+router.get("/:id", cors(), function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {
@@ -22,13 +23,13 @@ router.get("/:id", function (req, res, next) {
   }
 });
 
-router.get("/user/:id", function (req, res, next) {
+router.get("/user/:id", cors(), function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
   let userOrders = orders.filter((order) => order["user_id"] == req.params.id);
   res.status(200).json(userOrders);
 });
 
-router.post("/", function (req, res, next) {
+router.post("/", cors(), function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   let products = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
@@ -72,7 +73,7 @@ router.post("/", function (req, res, next) {
     orders.push(order);
     for (let i = 0; i < req.body.data.items.length; i++) {
       let book = products.find(
-        (item) => `${item.name}` == req.body.data.items[i].name,
+        (item) => `${item.name}` == req.body.data.items[i].name
       );
 
       if (book) {
@@ -98,7 +99,7 @@ router.post("/", function (req, res, next) {
                 message: "Successfully registered",
               });
             }
-          },
+          }
         );
       }
     });
@@ -107,7 +108,7 @@ router.post("/", function (req, res, next) {
   }
 });
 
-router.delete("/:id", function (req, res) {
+router.delete("/:id", cors(), function (req, res) {
   let orders = JSON.parse(fs.readFileSync("./data/orders.json", "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {
@@ -123,7 +124,7 @@ router.delete("/:id", function (req, res) {
             message: `Deleting order ${req.params.id}`,
           });
         }
-      },
+      }
     );
   }
 });
