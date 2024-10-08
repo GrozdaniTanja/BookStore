@@ -1,12 +1,15 @@
 const { response } = require("express");
 let express = require("express");
 const fs = require("fs");
+const path = require("path");
 let router = express.Router();
-const cors = require("cors");
+
+// Construct absolute path for the users JSON file
+const usersFilePath = path.join(__dirname, "../data/users.json");
 
 /* GET users listing. */
-router.get("/", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+router.get("/", function (req, res, next) {
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   if (users) {
     res.status(200).json(users);
   } else {
@@ -14,8 +17,8 @@ router.get("/", cors(), function (req, res, next) {
   }
 });
 
-router.get("/:id", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+router.get("/:id", function (req, res, next) {
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   let user = users.find((user) => user.id == req.params.id);
   if (user) {
     res.status(200).json(user);
@@ -24,35 +27,29 @@ router.get("/:id", cors(), function (req, res, next) {
   }
 });
 
-router.delete("/:id", cors(), function (req, res) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+router.delete("/:id", function (req, res) {
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   let user = users.find((user) => user.id == req.params.id);
   if (user) {
     let updatedUsers = users.filter((user) => user.id != req.params.id);
-    fs.writeFile(
-      "./data/users.json",
-      JSON.stringify(updatedUsers),
-      function (err) {
-        if (err) {
-          throw err;
-        } else {
-          res.status(200).send({ message: `Deleting user ${req.params.id}` });
-        }
+    fs.writeFile(usersFilePath, JSON.stringify(updatedUsers), function (err) {
+      if (err) {
+        throw err;
+      } else {
+        res.status(200).send({ message: `Deleting user ${req.params.id}` });
       }
-    );
+    });
   }
 });
 
-router.put("/:id", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+router.put("/:id", function (req, res, next) {
+  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
 
-  // loop through all users
-  // find the user with the id received in the request
-  // modify the user in place
-  // validate the user
+  // Find the user by ID
   let user = users.find((user) => user.id == req.params.id);
 
   if (user) {
+    // Update user data
     user.address.street = req.body.address.street;
     user.address.suite = req.body.address.suite;
     user.address.city = req.body.address.city;
@@ -60,7 +57,8 @@ router.put("/:id", cors(), function (req, res, next) {
     user.phone = req.body.phone;
 
     if (validateUser(user)) {
-      fs.writeFile("./data/users.json", JSON.stringify(users), function (err) {
+      // Save updated data to file
+      fs.writeFile(usersFilePath, JSON.stringify(users), function (err) {
         if (err) {
           throw err;
         } else {
