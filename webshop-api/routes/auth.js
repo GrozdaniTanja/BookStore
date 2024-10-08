@@ -44,25 +44,47 @@ router.post("/register", cors(), function (req, res, next) {
       },
       phone: "",
     };
-
-    let verifyUser = users.find(
-      (item) => item.username == user.username || item.email == user.email
-    );
-    if (verifyUser) {
-      res.status(403).send({ message: "User already exist." });
+    
+    if (validateUser(user)) {
+      let verifyUser = users.find(
+        (item) => item.username == user.username || item.email == user.email,
+      );
+      if (verifyUser) {
+        res.status(403).send({ message: "User already exist." });
+      } else {
+        users.push(user);
+        fs.writeFile(
+          usersFilePath,
+          JSON.stringify(users),
+          function (err) {
+            if (err) {
+              throw err;
+            } else {
+              res.send({ message: "Successfully registered" });
+            }
+          },
+        );
+      }
     } else {
-      users.push(user);
-      fs.writeFile(usersFilePath, JSON.stringify(users), function (err) {
-        if (err) {
-          throw err;
-        } else {
-          res.send({ message: "Successfully registered" });
-        }
-      });
+      res.status(400).send({ message: "Bad request" });
     }
   } else {
     res.status(400).send({ message: "Please complete all fields" });
   }
 });
+
+function validateUser(user) {
+  const regexLetters = /(^[A-Za-z]{2,30})([ ]{0,1})([A-Za-z]{2,30})/;
+  const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  const regexPassword = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  const regexUsername = /^[a-z0-9_-]{3,16}$/gim;
+
+  return (
+    user.name.match(regexLetters) &&
+    user.username.match(regexUsername) &&
+    user.email.match(regexEmail) &&
+    user.password.match(regexPassword)
+  );
+}
 
 module.exports = router;
