@@ -13,10 +13,17 @@ let authRouter = require("./routes/auth");
 
 let app = express();
 
+const corsOptions = {
+  origin: "https://book-store-frontend-delta-tawny.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true,
+};
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
