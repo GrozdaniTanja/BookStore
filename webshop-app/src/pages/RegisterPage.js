@@ -200,18 +200,6 @@ function RegisterPage() {
                       onChange={handleChange}
                       required
                     />
-                    <Form.Control.Feedback type="invalid">
-                      <p>
-                        Please provide a valid password. The password needs to:{" "}
-                      </p>
-                      <ul>
-                        <li>include both lower and upper case characters</li>
-                        <li>
-                          include at least one number and one special character
-                        </li>
-                        <li>be at least 8 characters long.</li>
-                      </ul>
-                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group
