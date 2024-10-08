@@ -7,9 +7,12 @@
     ],
     "routes": [
       {
-        "src": "/(.*)" ,
+        "src": "/(.*)",
         "dest": "/index.js"
       }
+    ],
+    "includeFiles": [
+      "data/*"
     ]
   }
   
