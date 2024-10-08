@@ -80,8 +80,17 @@ function StorePage() {
     axios
       .get(`${BASE_URL}/books`, { params: filters })
       .then(function (response) {
-        setBooks(response.data.products);
-        setFilterValues(response.data.filters);
+        console.log("API Response: ", response);
+        if (response.data && response.data.products) {
+          setBooks(response.data.products);
+          setFilterValues(response.data.filters);
+        } else {
+          setBooks([]);
+        }
+      })
+      .catch(function (error) {
+        console.error("Error fetching books: ", error);
+        setBooks([]);
       });
   };
 
