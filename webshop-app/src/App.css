@@ -4,12 +4,14 @@
   padding: 0.5rem 1rem;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
   color: white !important;
   cursor: pointer;
 }
 
-.dropdown, .dropdown-toggle {
+.dropdown,
+.dropdown-toggle {
   padding: 0 !important;
 }
 
@@ -47,15 +49,15 @@
   color: black;
 }
 
-.footer-item > a:hover{
+.footer-item > a:hover {
   color: #f60000;
 }
 
-@media (max-width: 600px){
-  .footer{
-      flex-direction: column;
+@media (max-width: 600px) {
+  .footer {
+    flex-direction: column;
   }
-  .footer-list{
-      padding-left: 0;
+  .footer-list {
+    padding-left: 0;
   }
 }

@@ -1,23 +1,24 @@
 .btn-delete {
-    margin-left:10px;
+  margin-left: 10px;
 }
 
-.name, .username {
-    margin: 0;
+.name,
+.username {
+  margin: 0;
 }
 
-.card-body p{
-    margin:0;
-    font-size:14px;
+.card-body p {
+  margin: 0;
+  font-size: 14px;
 }
 
 .main {
-    padding-top:56px;
-    width:80%;
-    margin:0 auto;
-}  
+  padding-top: 56px;
+  width: 80%;
+  margin: 0 auto;
+}
 
 .footer {
-    position: inherit;
-    margin-top: 80px;
+  position: inherit;
+  margin-top: 80px;
 }

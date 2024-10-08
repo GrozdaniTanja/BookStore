@@ -12,20 +12,21 @@ function ContextAwareToggle({ eventKey, callback }) {
 
   const decoratedOnClick = useAccordionButton(
     eventKey,
-    () => callback && callback(eventKey)
+    () => callback && callback(eventKey),
   );
 
   const isCurrentEventKey = activeEventKey === eventKey;
 
   return (
-    <Button 
-      onClick={decoratedOnClick} 
-      variant="outline-dark" 
-      className="btn-collapse collapsed" 
-      type="button" data-bs-toggle="collapse" 
-      aria-expanded="false" 
+    <Button
+      onClick={decoratedOnClick}
+      variant="outline-dark"
+      className="btn-collapse collapsed"
+      type="button"
+      data-bs-toggle="collapse"
+      aria-expanded="false"
       aria-controls="collapseExample"
-      >
+    >
       {isCurrentEventKey ? (
         <i className="fas fa-chevron-circle-up"></i>
       ) : (
@@ -42,7 +43,7 @@ export default function Order({
   date,
   total,
   deliveryAddress,
-  billingAddress
+  billingAddress,
 }) {
   let count = 1;
   let dateTransformed = new Date(date);

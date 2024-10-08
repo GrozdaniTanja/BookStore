@@ -29,21 +29,19 @@ app.use("/orders", ordersRouter);
 app.use("/auth", authRouter);
 
 app.use(function (req, res, next) {
-    res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ error: "Route not found" });
 });
-
 
 app.use(function (err, req, res, next) {
-    console.error(err.stack); 
-    res.status(err.status || 500).json({
-        message: err.message,
-        error: req.app.get("env") === "development" ? err : {}
-    });
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: req.app.get("env") === "development" ? err : {},
+  });
 });
 
-
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
+  console.log(`App listening at http://localhost:${port}`);
 });
 
 module.exports = app;

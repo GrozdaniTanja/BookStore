@@ -1,13 +1,15 @@
-.filter-brand, .filter-price, .filter-os {
-    display: flex;
-    flex-direction: column;
+.filter-brand,
+.filter-price,
+.filter-os {
+  display: flex;
+  flex-direction: column;
 }
 
 .reset-input {
-    margin: auto;
-    margin-top: 20px;
+  margin: auto;
+  margin-top: 20px;
 }
 
 .filter-item {
-    margin-left: 15px;
+  margin-left: 15px;
 }

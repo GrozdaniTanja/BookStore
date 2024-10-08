@@ -47,7 +47,7 @@ body {
   padding: 0 0 5px 0;
 }
 
-.actionButtons{
+.actionButtons {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,16 +81,16 @@ body {
 }
 
 .input-group-text {
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 .border-none {
-    border-top-left-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
-    border-left: none !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: none !important;
 }
-  
+
 legend {
   font-size: 20px;
   font-weight: bold;

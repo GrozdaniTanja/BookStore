@@ -6,7 +6,7 @@ function CustomerAddress({
   handleChangeAddress,
   billingAddress,
   deliveryAddress,
-  validated
+  validated,
 }) {
   return (
     <>

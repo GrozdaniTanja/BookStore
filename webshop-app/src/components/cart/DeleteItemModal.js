@@ -1,5 +1,5 @@
 import { Modal, Button } from "react-bootstrap";
-function DeleteItemModal({deleteCartItemAndModalClose, ...props}) {
+function DeleteItemModal({ deleteCartItemAndModalClose, ...props }) {
   return (
     <Modal
       {...props}
