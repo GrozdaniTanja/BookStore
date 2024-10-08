@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import "../css/StorePage.css";
-import { BASE_URL } from "../Constants";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function StorePage() {
   const [addModalShow, setAddModalShow] = useState(false);
