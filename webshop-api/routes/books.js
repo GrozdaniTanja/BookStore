@@ -1,11 +1,20 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path"); // Import the path module
 const { ServerResponse } = require("http");
 const router = express.Router();
 
+// Define the path to the data directory
+const dataDirectory = path.join(__dirname, "../data");
+
+// Function to read books from the JSON file
+function readBooksFromFile() {
+  return JSON.parse(fs.readFileSync(path.join(dataDirectory, "books.json"), "utf8"));
+}
+
 router.get("/", function (req, res, next) {
   // get books array
-  let books = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let books = readBooksFromFile();
   if (books) {
     // handle success
 
@@ -54,7 +63,7 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/:id", function (req, res, next) {
-  let content = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let content = readBooksFromFile();
   let book = content.find((item) => item["name"] == req.params.id);
   if (book) {
     res.status(200).json(book);
@@ -64,7 +73,7 @@ router.get("/:id", function (req, res, next) {
 });
 
 router.post("/", function (req, res, next) {
-  let content = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let content = readBooksFromFile();
   if (
     req.body.name &&
     req.body.author &&
@@ -97,11 +106,11 @@ router.post("/", function (req, res, next) {
           item.author == product.author,
       );
       if (verifyProduct) {
-        res.status(403).send({ message: "Product already exist." });
+        res.status(403).send({ message: "Product already exists." });
       } else {
         content.push(product);
         fs.writeFile(
-          "./data/books.json",
+          path.join(dataDirectory, "books.json"),
           JSON.stringify(content),
           function (err) {
             if (err) {
@@ -124,12 +133,12 @@ router.post("/", function (req, res, next) {
 
 // delete
 router.delete("/:id", function (req, res) {
-  let books = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let books = readBooksFromFile();
   let book = books.find((book) => book.id == req.params.id);
   if (book) {
     let updatedBooks = books.filter((book) => book.id != req.params.id);
     fs.writeFile(
-      "./data/books.json",
+      path.join(dataDirectory, "books.json"),
       JSON.stringify(updatedBooks),
       function (err) {
         if (err) {
@@ -146,7 +155,7 @@ router.delete("/:id", function (req, res) {
 
 // update
 router.put("/:id", function (req, res, next) {
-  let products = JSON.parse(fs.readFileSync("./data/books.json", "utf8"));
+  let products = readBooksFromFile();
   let book = products.find((book) => book.id == req.params.id);
   if (book) {
     book.name = req.body.name;
@@ -162,7 +171,7 @@ router.put("/:id", function (req, res, next) {
 
     if (validateProduct(book)) {
       fs.writeFile(
-        "./data/books.json",
+        path.join(dataDirectory, "books.json"),
         JSON.stringify(products),
         function (err) {
           if (err) {
@@ -184,8 +193,6 @@ router.put("/:id", function (req, res, next) {
 
 function validateProduct(product) {
   let regexProductName = /^[\w\-\s\,]+$/;
-  // let regexLetters = /^[a-zA-Z]{2,30}/;
-  // let regexAlphaNumeric = /^[A-Za-z0-9]{2,30}/;
   let regexAuthor =
     /(^[a-zA-Z]{1,16})(\.{0,1})([ ]{0,1})([a-zA-Z]{1,16})(\.{0,1})([ ]{0,1})([a-zA-Z]{0,26})/;
 
@@ -284,7 +291,6 @@ function getProductsByPublishingHouse(item, publishing_house) {
 
 // filter by minimum rating
 function getProductsByRating(item, rating) {
-  // let selectedRating = document.getElementById('minimum_rating').value;
   if (rating) {
     return item.rating >= rating;
   }
