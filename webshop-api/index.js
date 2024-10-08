@@ -15,11 +15,11 @@ let app = express();
 
 const corsOptions = {
   origin: [
-    "https://book-store-frontend-delta-tawny.vercel.app",
-    "http://localhost:3000",
+    "https://book-store-frontend-delta-tawny.vercel.app", // vercel deployment
+    "http://localhost:3000", // local react app
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
@@ -27,6 +27,7 @@ const corsOptions = {
 app.set("views", path.join(__dirname, "views"));
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
