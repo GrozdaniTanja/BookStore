@@ -109,7 +109,6 @@ function LoginPage() {
                     placeholder="Email"
                     aria-label="Email"
                     aria-describedby="basic-addon1"
-                    pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}"
                     required
                   />
                   <Form.Control.Feedback type="invalid">

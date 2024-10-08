@@ -1,9 +1,8 @@
 const express = require("express");
 const fs = require("fs");
 const router = express.Router();
-const cors = require("cors");
 
-router.post("/login", cors(), function (req, res, next) {
+router.post("/login", function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
   let user = users.find(
     (user) =>
@@ -17,8 +16,9 @@ router.post("/login", cors(), function (req, res, next) {
   }
 });
 
-router.post("/register", cors(), function (req, res, next) {
+router.post("/register", function (req, res, next) {
   let users = JSON.parse(fs.readFileSync("./data/users.json", "utf8"));
+  console.log("body", req.body);
   if (
     req.body.name &&
     req.body.username &&

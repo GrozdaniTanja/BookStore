@@ -53,5 +53,15 @@
     "role": "user",
     "address": { "street": "", "suite": "", "city": "", "zipcode": "" },
     "phone": ""
+  },
+  {
+    "id": 4,
+    "name": "user",
+    "username": "user",
+    "email": "user@gmail.com",
+    "password": "user",
+    "role": "user",
+    "address": { "street": "", "suite": "", "city": "", "zipcode": "" },
+    "phone": ""
   }
 ]

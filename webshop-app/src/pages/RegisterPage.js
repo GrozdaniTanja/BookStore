@@ -43,6 +43,7 @@ function RegisterPage() {
 
   function handleSubmit(e) {
     const form = e.currentTarget;
+    console.log("inputs", inputs);
 
     setValidated(true);
     e.preventDefault();
@@ -120,7 +121,6 @@ function RegisterPage() {
                       name="username"
                       value={inputs.username}
                       onChange={handleChange}
-                      pattern="^[a-z0-9_-]{3,16}"
                       required
                     />
                     <Form.Control.Feedback type="invalid">
@@ -140,7 +140,6 @@ function RegisterPage() {
                       placeholder="First name"
                       value={inputs.firstName}
                       onChange={handleChange}
-                      pattern="^[A-Za-z]{2,30}"
                       required
                     />
                     <Form.Control.Feedback type="invalid">
@@ -155,7 +154,6 @@ function RegisterPage() {
                       placeholder="Last name"
                       value={inputs.lastName}
                       onChange={handleChange}
-                      pattern="^[A-Za-z]{2,30}"
                       required
                     />
                     <Form.Control.Feedback type="invalid">
@@ -178,7 +176,6 @@ function RegisterPage() {
                       name="email"
                       value={inputs.email}
                       onChange={handleChange}
-                      pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}"
                       required
                     />
                     <Form.Control.Feedback type="invalid">

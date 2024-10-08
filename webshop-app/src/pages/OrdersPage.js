@@ -5,6 +5,7 @@ import "../css/Orders.css";
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../Constants";
 
 function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -27,7 +28,7 @@ function OrdersPage() {
       setCartItemsNumber(counter);
     }
 
-    fetch(`https://book-store-backend-rust.vercel.app/orders/user/${idUser}`)
+    fetch(`${BASE_URL}/orders/user/${idUser}`)
       .then((response) => response.json())
       .then((data) => setOrders(data));
   }, []);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
 import { Button, Card } from "react-bootstrap";
+import { BASE_URL } from "../../Constants";
 
 function User({ id, name, username, email, role, address, phone, getUsers }) {
   const [idToDelete, setIdToDelete] = useState();
@@ -11,7 +12,7 @@ function User({ id, name, username, email, role, address, phone, getUsers }) {
   };
 
   const deleteUser = () => {
-    fetch("https://book-store-backend-rust.vercel.app/users/" + idToDelete, {
+    fetch(`${BASE_URL}/users/` + idToDelete, {
       method: "DELETE",
     }).then(function () {
       getUsers();

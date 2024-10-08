@@ -14,7 +14,10 @@ let authRouter = require("./routes/auth");
 let app = express();
 
 const corsOptions = {
-  origin: "https://book-store-frontend-delta-tawny.vercel.app",
+  origin: [
+    "https://book-store-frontend-delta-tawny.vercel.app",
+    "http://localhost:3000",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"],
   credentials: true,

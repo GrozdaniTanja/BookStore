@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path"); // Import the path module
 const router = express.Router();
-const cors = require("cors");
 
 // Define the path to the data directory
 const dataDirectory = path.join(__dirname, "../data");
@@ -14,7 +13,7 @@ function readBooksFromFile() {
   );
 }
 
-router.get("/", cors(), function (req, res, next) {
+router.get("/", function (req, res, next) {
   // get books array
   let books = readBooksFromFile();
   if (books) {
@@ -64,7 +63,7 @@ router.get("/", cors(), function (req, res, next) {
   }
 });
 
-router.get("/:id", cors(), function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   let content = readBooksFromFile();
   let book = content.find((item) => item["name"] == req.params.id);
   if (book) {
@@ -134,7 +133,7 @@ router.post("/", function (req, res, next) {
 });
 
 // delete
-router.delete("/:id", cors(), function (req, res) {
+router.delete("/:id", function (req, res) {
   let books = readBooksFromFile();
   let book = books.find((book) => book.id == req.params.id);
   if (book) {
@@ -156,7 +155,7 @@ router.delete("/:id", cors(), function (req, res) {
 });
 
 // update
-router.put("/:id", cors(), function (req, res, next) {
+router.put("/:id", function (req, res, next) {
   let products = readBooksFromFile();
   let book = products.find((book) => book.id == req.params.id);
   if (book) {

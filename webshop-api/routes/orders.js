@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const uuid = require("uuid");
-const cors = require("cors");
 const router = express.Router();
 
 // Construct absolute paths for the JSON files
@@ -10,7 +9,7 @@ const ordersFilePath = path.join(__dirname, "../data/orders.json");
 const usersFilePath = path.join(__dirname, "../data/users.json");
 const productsFilePath = path.join(__dirname, "../data/books.json");
 
-router.get("/", cors(), function (req, res, next) {
+router.get("/", function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   if (orders) {
     res.status(200).json(orders);
@@ -19,7 +18,7 @@ router.get("/", cors(), function (req, res, next) {
   }
 });
 
-router.get("/:id", cors(), function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {
@@ -29,13 +28,13 @@ router.get("/:id", cors(), function (req, res, next) {
   }
 });
 
-router.get("/user/:id", cors(), function (req, res, next) {
+router.get("/user/:id", function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let userOrders = orders.filter((order) => order["user_id"] == req.params.id);
   res.status(200).json(userOrders);
 });
 
-router.post("/", cors(), function (req, res, next) {
+router.post("/", function (req, res, next) {
   let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
   let products = JSON.parse(fs.readFileSync(productsFilePath, "utf8"));
@@ -115,7 +114,7 @@ router.post("/", cors(), function (req, res, next) {
   }
 });
 
-router.delete("/:id", cors(), function (req, res) {
+router.delete("/:id", function (req, res) {
   let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
   let order = orders.find((order) => order.id == req.params.id);
   if (order) {

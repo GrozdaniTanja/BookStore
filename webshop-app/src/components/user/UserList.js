@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "../../css/Users.css";
 import User from "./User";
+import { BASE_URL } from "../../Constants";
 
 function UserList() {
   const [users, setUsers] = useState([]);
@@ -11,7 +12,7 @@ function UserList() {
   }, []);
 
   const getUsers = () => {
-    fetch("https://book-store-backend-rust.vercel.app/users")
+    fetch(`${BASE_URL}/users`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
