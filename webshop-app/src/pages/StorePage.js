@@ -25,6 +25,8 @@ function StorePage() {
     sort: "none",
   });
 
+  console.log("BASE_URL:", BASE_URL);
+
   const handleChange = (event) => {
     const name = event.target.name;
     const isChecked = event.target.checked;
