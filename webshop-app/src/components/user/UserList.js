@@ -11,7 +11,7 @@ function UserList() {
   }, []);
 
   const getUsers = () => {
-    fetch("http://localhost:3001/users")
+    fetch("https://book-store-backend-rust.vercel.app/users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
