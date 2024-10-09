@@ -1,68 +1,62 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path"); // Add the path module
 const router = express.Router();
-const cors = require("cors");
+const User = require("../models/User");
+const bcrypt = require("bcrypt"); 
 
-// Construct absolute path for the users JSON file
-const usersFilePath = path.join(__dirname, "../data/users.json");
+// Registration route
+router.post("/register", async (req, res) => {
+    try {
+        const { name, username, email, password } = req.body;
 
-router.post("/login", function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
-  let user = users.find(
-    (user) =>
-      user.email === req.body.email && user.password === req.body.password
-  );
-  if (user) {
-    res.status(200).json(user);
-  } else {
-    console.log(users);
-    res.status(404).send({ message: "404 Not Found" });
-  }
+        if (!name || !username || !email || !password) {
+            return res.status(400).send({ message: "Please complete all fields" });
+        }
+
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) {
+            return res.status(403).send({ message: "User already exists." });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({
+            name,
+            username,
+            email,
+            password: hashedPassword,
+            role: "user",
+            address: {
+                street: "",
+                suite: "",
+                city: "",
+                zipcode: "",
+            },
+            phone: "",
+        });
+
+        await newUser.save(); 
+        res.status(201).send({ message: "Successfully registered" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Internal Server Error" });
+    }
 });
 
-router.post("/register", cors(), function (req, res, next) {
-  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
-  if (
-    req.body.name &&
-    req.body.username &&
-    req.body.email &&
-    req.body.password
-  ) {
-    let user = {
-      id: users[users.length - 1].id + 1,
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      role: "user",
-      address: {
-        street: "",
-        suite: "",
-        city: "",
-        zipcode: "",
-      },
-      phone: "",
-    };
+// Login route
+router.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
-    let verifyUser = users.find(
-      (item) => item.username == user.username || item.email == user.email
-    );
-    if (verifyUser) {
-      res.status(403).send({ message: "User already exist." });
-    } else {
-      users.push(user);
-      fs.writeFile(usersFilePath, JSON.stringify(users), function (err) {
-        if (err) {
-          throw err;
+        if (user && (await bcrypt.compare(password, user.password))) { 
+            res.status(200).json(user);
         } else {
-          res.send({ message: "Successfully registered" });
+            res.status(404).send({ message: "User not found or incorrect password" });
         }
-      });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Internal Server Error" });
     }
-  } else {
-    res.status(400).send({ message: "Please complete all fields" });
-  }
 });
 
 module.exports = router;
