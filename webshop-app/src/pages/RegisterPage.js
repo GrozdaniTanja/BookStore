@@ -53,6 +53,7 @@ function RegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify({
           name: `${inputs.firstName} ${inputs.lastName}`,
           username: inputs.username,

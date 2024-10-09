@@ -19,7 +19,7 @@ const corsOptions = {
     "http://localhost:3000", // local react app
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   credentials: true,
 };
 
@@ -37,6 +37,12 @@ app.use("/users", usersRouter);
 app.use("/books", booksRouter.router);
 app.use("/orders", ordersRouter);
 app.use("/auth", authRouter);
+
+app.use((req, res, next) => {
+    console.log('Request received:', req.method, req.path);
+    next();
+  });
+  
 
 app.use(function (req, res, next) {
   res.status(404).json({ error: "Route not found" });
