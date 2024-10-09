@@ -6,13 +6,13 @@ import BookList from "../components/book/BookList";
 import { Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
 import "../css/StorePage.css";
-//const BASE_URL = process.env.REACT_APP_BASE_URL;
-const BASE_URL = process.env.REACT_APP_API_URL;
-
+import { BASE_URL } from "../Constants";
 
 function StorePage() {
+
+  console.log("BASE_URL:", BASE_URL);
+  console.log("Environment Variables:", process.env);
   const [addModalShow, setAddModalShow] = useState(false);
   const [books, setBooks] = useState([]);
   const [filterValues, setFilterValues] = useState(null);
@@ -27,7 +27,8 @@ function StorePage() {
     sort: "none",
   });
 
-  console.log("BASE_URL:", BASE_URL);
+
+
 
   const handleChange = (event) => {
     const name = event.target.name;
