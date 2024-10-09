@@ -10,6 +10,7 @@ let usersRouter = require("./routes/users");
 let booksRouter = require("./routes/books");
 let ordersRouter = require("./routes/orders");
 let authRouter = require("./routes/auth");
+const connectDB = require("./database/db");
 
 let app = express();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "/public")));
+connectDB();
 
 app.use("/users", usersRouter);
 app.use("/books", booksRouter.router);

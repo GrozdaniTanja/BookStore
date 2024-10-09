@@ -1,40 +1,27 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path"); // Import the path module
+const Book = require("../models/Book"); // Import the Book model
 const router = express.Router();
 
-// Define the path to the data directory
-const dataDirectory = path.join(__dirname, "../data");
+// Get all books with optional filters
+router.get("/", async function (req, res) {
+  try {
+    const books = await Book.find({}); // Fetch all books from MongoDB
 
-// Function to read books from the JSON file
-function readBooksFromFile() {
-  return JSON.parse(
-    fs.readFileSync(path.join(dataDirectory, "books.json"), "utf8")
-  );
-}
-
-router.get("/", function (req, res, next) {
-  // get books array
-  let books = readBooksFromFile();
-  if (books) {
-    // handle success
-
-    // get filters array
     let filters = {};
     filters.type = Array.from(arrayCheckboxes("category", books));
     filters.publishing_house = Array.from(
       arrayCheckboxes("publishing_house", books)
     );
 
-    // set selected filters from query
-    let selectedFilters = {};
-    selectedFilters.search = req.query.search || "";
-    selectedFilters.sort = req.query.sort || "";
-    selectedFilters.category = req.query.category || [];
-    selectedFilters.price_range = req.query.price_range || "";
-    selectedFilters.minimum_rating = req.query.minimum_rating || 0;
-    selectedFilters.publishing_house = req.query.publishing_house || [];
-    selectedFilters.in_stock = req.query.stock_yes || false;
+    let selectedFilters = {
+      search: req.query.search || "",
+      sort: req.query.sort || "",
+      category: req.query.category || [],
+      price_range: req.query.price_range || "",
+      minimum_rating: req.query.minimum_rating || 0,
+      publishing_house: req.query.publishing_house || [],
+      in_stock: req.query.stock_yes || false
+    };
 
     // filter books array by query params
     let filterFunction = (item) =>
@@ -51,42 +38,50 @@ router.get("/", function (req, res, next) {
       getSorted(req.query.sort)
     );
 
-    let response = {
+    res.status(200).json({
       products: products,
       filters: filters,
-      selectedFilters: selectedFilters,
-    };
-
-    res.status(200).json(response);
-  } else {
-    res.status(404).send({ message: "404 Not Found" });
+      selectedFilters: selectedFilters
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving books", error });
   }
 });
 
-router.get("/:id", function (req, res, next) {
-  let content = readBooksFromFile();
-  let book = content.find((item) => item["name"] == req.params.id);
-  if (book) {
-    res.status(200).json(book);
-  } else {
-    res.status(404).send({ message: "404 Not Found" });
+// Get book by ID
+router.get("/:id", async function (req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (book) {
+      res.status(200).json(book);
+    } else {
+      res.status(404).send({ message: "Book not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving book", error });
   }
 });
 
-router.post("/", function (req, res, next) {
-  let content = readBooksFromFile();
-  if (
-    req.body.name &&
-    req.body.author &&
-    req.body.category &&
-    req.body.publishing_house &&
-    req.body.price &&
-    req.body.quantity &&
-    req.body.availability_date &&
-    req.body.image
-  ) {
-    let product = {
-      id: content[content.length - 1].id + 1,
+// Get book by name
+router.get("/name/:name", async function (req, res) {
+  try {
+    const book = await Book.findOne({ name: req.params.name });
+    if (book) {
+      res.status(200).json(book);
+    } else {
+      res.status(404).send({ message: "Book not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving book", error });
+  }
+});
+
+
+
+// Add a new book
+router.post("/", async function (req, res) {
+  try {
+    const bookData = {
       name: req.body.name,
       author: req.body.author,
       category: req.body.category,
@@ -96,99 +91,75 @@ router.post("/", function (req, res, next) {
       quantity: Number(req.body.quantity),
       availability_date: req.body.availability_date,
       rating: Number(req.body.rating),
-      image: req.body.image,
+      image: req.body.image
     };
 
-    if (validateProduct(product)) {
-      let verifyProduct = content.find(
-        (item) =>
-          item.name == product.name &&
-          item.category == product.category &&
-          item.author == product.author
-      );
-      if (verifyProduct) {
-        res.status(403).send({ message: "Product already exists." });
+    if (validateProduct(bookData)) {
+      const existingBook = await Book.findOne({
+        name: bookData.name,
+        category: bookData.category,
+        author: bookData.author
+      });
+
+      if (existingBook) {
+        return res.status(403).json({ message: "Book already exists" });
+      }
+
+      const newBook = new Book(bookData);
+      await newBook.save();
+      res.status(200).json({ message: "Book added successfully" });
+    } else {
+      res.status(400).json({ message: "Invalid book data" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error adding book", error });
+  }
+});
+
+// Update a book by ID
+router.put("/:id", async function (req, res) {
+  try {
+    const updatedData = {
+      name: req.body.name,
+      author: req.body.author,
+      category: req.body.category,
+      publishing_house: req.body.publishing_house,
+      price: Number(req.body.price),
+      discount: Number(req.body.discount),
+      quantity: Number(req.body.quantity),
+      availability_date: req.body.availability_date,
+      rating: Number(req.body.rating),
+      image: req.body.image
+    };
+
+    if (validateProduct(updatedData)) {
+      const updatedBook = await Book.findByIdAndUpdate(req.params.id, updatedData, {
+        new: true
+      });
+      if (updatedBook) {
+        res.status(200).json({ message: "Book updated successfully" });
       } else {
-        content.push(product);
-        fs.writeFile(
-          path.join(dataDirectory, "books.json"),
-          JSON.stringify(content),
-          function (err) {
-            if (err) {
-              throw err;
-            } else {
-              res.status(200).send({
-                message: `Adding book ${req.body.name}`,
-              });
-            }
-          }
-        );
+        res.status(404).json({ message: "Book not found" });
       }
     } else {
-      res.status(400).send({ message: "Bad request" });
+      res.status(400).json({ message: "Invalid book data" });
     }
-  } else {
-    res.status(400).send({ message: "Please complete all fields" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating book", error });
   }
 });
 
-// delete
-router.delete("/:id", function (req, res) {
-  let books = readBooksFromFile();
-  let book = books.find((book) => book.id == req.params.id);
-  if (book) {
-    let updatedBooks = books.filter((book) => book.id != req.params.id);
-    fs.writeFile(
-      path.join(dataDirectory, "books.json"),
-      JSON.stringify(updatedBooks),
-      function (err) {
-        if (err) {
-          throw err;
-        } else {
-          res.status(200).send({
-            message: `Deleting book ${req.params.id}`,
-          });
-        }
-      }
-    );
-  }
-});
-
-// update
-router.put("/:id", function (req, res, next) {
-  let products = readBooksFromFile();
-  let book = products.find((book) => book.id == req.params.id);
-  if (book) {
-    book.name = req.body.name;
-    book.author = req.body.author;
-    book.category = req.body.category;
-    book.publishing_house = req.body.publishing_house;
-    book.price = Number(req.body.price);
-    book.discount = Number(req.body.discount);
-    book.quantity = Number(req.body.quantity);
-    book.availability_date = req.body.availability_date;
-    book.rating = Number(req.body.rating);
-    book.image = req.body.image;
-
-    if (validateProduct(book)) {
-      fs.writeFile(
-        path.join(dataDirectory, "books.json"),
-        JSON.stringify(products),
-        function (err) {
-          if (err) {
-            throw err;
-          } else {
-            res.status(200).send({
-              message: `Updating book ${req.body.name}`,
-            });
-          }
-        }
-      );
+// Delete a book by ID
+router.delete("/:id", async function (req, res) {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    if (book) {
+      res.status(200).json({ message: "Book deleted successfully" });
     } else {
-      res.status(400).send({ message: "Bad request" });
+      res.status(404).json({ message: "Book not found" });
     }
-  } else {
-    res.status(400).send({ message: "Please complete all fields" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting book", error });
   }
 });
 

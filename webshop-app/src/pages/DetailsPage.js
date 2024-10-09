@@ -21,7 +21,7 @@ function DetailsPage() {
     const afterLastSlash = window.location.pathname.substring(
       window.location.pathname.lastIndexOf("/") + 1,
     );
-    axios.get(`${BASE_URL}/books/${afterLastSlash}`).then(function (response) {
+    axios.get(`${BASE_URL}/books/name/${afterLastSlash}`).then(function (response) {
       setBook(response.data);
     });
     const cartItems = JSON.parse(localStorage.getItem("items"));
