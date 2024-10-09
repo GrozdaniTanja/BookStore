@@ -58,43 +58,32 @@ function ProfilePage() {
                 <dt>
                   <strong>Name: </strong>
                 </dt>
-                <dd>{user.name}</dd>
+                <dd>{user.name || "Not provided"}</dd>
                 <dt>
                   <strong>Email: </strong>
                 </dt>
-                <dd>{user.email}</dd>
-                {user.address.street ? (
-                  <>
-                    <dt>
-                      <strong>Address: </strong>
-                    </dt>
-                    <dd>
-                      {user.address.street + " street"}, {user.address.suite},
-                      {user.address.zipcode}, {user.address.city}
-                    </dd>
-                  </>
+                <dd>{user.email || "Not provided"}</dd>
+
+                <dt>
+                  <strong>Address: </strong>
+                </dt>
+                {user.address && user.address.street ? (
+                  <dd>
+                    {user.address.street + " street"},{" "}
+                    {user.address.suite || ""}, {user.address.zipcode || ""},{" "}
+                    {user.address.city || ""}
+                  </dd>
                 ) : (
-                  <>
-                    <dt>
-                      <strong>Address: </strong>
-                    </dt>
-                    <dd>You didn't saved an address yet.</dd>
-                  </>
+                  <dd>You haven't provided an address yet.</dd>
                 )}
+
+                <dt>
+                  <strong>Phone number: </strong>
+                </dt>
                 {user.phone ? (
-                  <>
-                    <dt>
-                      <strong>Phone number: </strong>
-                    </dt>
-                    <dd>{user.phone}</dd>
-                  </>
+                  <dd>{user.phone}</dd>
                 ) : (
-                  <>
-                    <dt>
-                      <strong>Phone number: </strong>
-                    </dt>
-                    <dd>You didn't saved a phone number yet.</dd>
-                  </>
+                  <dd>You haven't provided a phone number yet.</dd>
                 )}
               </dl>
 
@@ -106,16 +95,16 @@ function ProfilePage() {
               </Button>
               <EditProfileModal
                 id={user_id}
-                name={user.name}
-                username={user.username}
-                email={user.email}
-                password={user.password}
-                role={user.role}
-                street={user.address.street}
-                suite={user.address.suite}
-                city={user.address.city}
-                zipcode={user.address.zipcode}
-                phone={user.phone}
+                name={user.name || ""}
+                username={user.username || ""}
+                email={user.email || ""}
+                password={user.password || ""}
+                role={user.role || ""}
+                street={user.address?.street || ""}
+                suite={user.address?.suite || ""}
+                city={user.address?.city || ""}
+                zipcode={user.address?.zipcode || ""}
+                phone={user.phone || ""}
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 getProfile={getProfile}

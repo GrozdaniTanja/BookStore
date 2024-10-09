@@ -55,7 +55,7 @@ function LoginPage() {
           if (!data.message) {
             setError(false);
             localStorage.setItem("user_username", data.username);
-            localStorage.setItem("user_id", data.id);
+            localStorage.setItem("user_id", data._id);
             localStorage.setItem("user_role", data.role);
             setShow(true);
             setTimeout(() => {

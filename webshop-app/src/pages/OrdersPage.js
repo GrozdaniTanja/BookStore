@@ -42,7 +42,7 @@ function OrdersPage() {
             <>
               {orders.map((order) => (
                 <Order
-                  key={order.id}
+                  key={order._id}
                   order={order}
                   id={order.id}
                   email={order.email}

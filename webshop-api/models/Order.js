@@ -1,91 +1,92 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define the schema for order items
 const orderItemSchema = new mongoose.Schema({
   id: {
     type: Number,
-    required: true
+    required: false,
   },
+
   name: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   quantity: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Define the schema for delivery and billing addresses
 const addressSchema = new mongoose.Schema({
   street: {
     type: String,
-    required: true
+    required: true,
   },
   suite: {
     type: String,
-    required: true
+    required: true,
   },
   city: {
     type: String,
-    required: true
+    required: true,
   },
   zipcode: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Define the main order schema
 const orderSchema = new mongoose.Schema({
   id: {
     type: String,
-    required: true
+    required: false,
   },
   user_id: {
-    type: Number,
-    required: true
+    type: String,
+    required: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   delivery_address: {
     type: addressSchema,
-    required: true
+    required: true,
   },
   billing_address: {
     type: addressSchema,
-    required: true
+    required: true,
   },
   phone: {
     type: String,
-    default: "" // Assuming phone can be empty
+    default: "", // Assuming phone can be empty
   },
-  order: [orderItemSchema], 
+  order: [orderItemSchema],
   payment: {
     type: String,
-    required: true
+    required: true,
   },
   date: {
     type: Date,
     required: true,
-    default: Date.now 
+    default: Date.now,
   },
   total: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

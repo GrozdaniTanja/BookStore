@@ -1,135 +1,109 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const uuid = require("uuid");
+const Order = require("../models/Order");
+const Book = require("../models/Book");
+const User = require("../models/User");
 const router = express.Router();
 
-// Construct absolute paths for the JSON files
-const ordersFilePath = path.join(__dirname, "../data/orders.json");
-const usersFilePath = path.join(__dirname, "../data/users.json");
-const productsFilePath = path.join(__dirname, "../data/books.json");
-
-router.get("/", function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
-  if (orders) {
+router.get("/", async (req, res) => {
+  try {
+    const orders = await Order.find({});
     res.status(200).json(orders);
-  } else {
-    res.status(404).send({ message: "404 Not Found" });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving orders", error });
   }
 });
 
-router.get("/:id", function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
-  let order = orders.find((order) => order.id == req.params.id);
-  if (order) {
-    res.status(200).json(order);
-  } else {
-    res.status(404).send("404 Not Found");
+// Get order by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      res.status(200).json(order);
+    } else {
+      res.status(404).json({ message: "Order not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving order", error });
   }
 });
 
-router.get("/user/:id", function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
-  let userOrders = orders.filter((order) => order["user_id"] == req.params.id);
-  res.status(200).json(userOrders);
-});
+router.post("/", async (req, res) => {
+  try {
+    const { user, delivery_address, billing_address, items, total } =
+      req.body.data;
 
-router.post("/", function (req, res, next) {
-  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
-  let users = JSON.parse(fs.readFileSync(usersFilePath, "utf8"));
-  let products = JSON.parse(fs.readFileSync(productsFilePath, "utf8"));
-  let user = users.find((user) => user.id == req.body.data.user);
+    const userDetails = await User.findById(user);
 
-  if (
-    req.body.data.delivery_address.street &&
-    req.body.data.delivery_address.suite &&
-    req.body.data.delivery_address.city &&
-    req.body.data.delivery_address.zipcode &&
-    req.body.data.billing_address.street &&
-    req.body.data.billing_address.suite &&
-    req.body.data.billing_address.city &&
-    req.body.data.billing_address.zipcode &&
-    req.body.data.items &&
-    req.body.data.total
-  ) {
-    let order = {
-      id: uuid.v1(),
-      user_id: user.id,
-      name: user.name,
-      email: user.email,
-      delivery_address: {
-        street: req.body.data.delivery_address.street,
-        suite: req.body.data.delivery_address.suite,
-        city: req.body.data.delivery_address.city,
-        zipcode: req.body.data.delivery_address.zipcode,
-      },
-      billing_address: {
-        street: req.body.data.billing_address.street,
-        suite: req.body.data.billing_address.suite,
-        city: req.body.data.billing_address.city,
-        zipcode: req.body.data.billing_address.zipcode,
-      },
-      phone: user.phone,
-      order: req.body.data.items,
-      payment: "card",
-      date: Date.now(),
-      total: req.body.data.total,
-    };
+    const products = await Book.find({
+      name: { $in: items.map((item) => item.name) },
+    });
 
-    orders.push(order);
-    for (let i = 0; i < req.body.data.items.length; i++) {
-      let book = products.find(
-        (item) => `${item.name}` == req.body.data.items[i].name
-      );
-
+    for (const item of items) {
+      const book = products.find((product) => product.name === item.name);
       if (book) {
-        if (book.quantity > 1) {
-          book.quantity = book.quantity - req.body.data.items[i].quantity;
-        } else {
-          book.quantity = 0;
+        if (book.quantity < item.quantity) {
+          return res
+            .status(400)
+            .json({ message: `Not enough stock for ${item.name}` });
         }
+        book.quantity -= item.quantity;
+        await book.save();
       }
     }
-    fs.writeFile(ordersFilePath, JSON.stringify(orders), function (err) {
-      if (err) {
-        throw err;
-      } else {
-        fs.writeFile(
-          productsFilePath,
-          JSON.stringify(products),
-          function (err) {
-            if (err) {
-              throw err;
-            } else {
-              res.status(200).send({
-                message: "Successfully registered",
-              });
-            }
-          }
-        );
-      }
+
+    const newOrder = new Order({
+      user_id: userDetails.id,
+      name: userDetails.name,
+      email: userDetails.email,
+      delivery_address,
+      billing_address,
+      phone: userDetails.phone,
+      order: items,
+      payment: "card",
+      date: Date.now(),
+      total,
     });
-  } else {
-    res.status(400).send({ message: "Please complete all fields" });
+
+    await newOrder.save();
+
+    return res
+      .status(200)
+      .json({ message: "Order placed successfully", orderId: newOrder._id });
+  } catch (error) {
+    console.error("Error placing order: ", error);
+    return res.status(500).json({ message: "Error placing order", error });
   }
 });
 
-router.delete("/:id", function (req, res) {
-  let orders = JSON.parse(fs.readFileSync(ordersFilePath, "utf8"));
-  let order = orders.find((order) => order.id == req.params.id);
-  if (order) {
-    let updatedOrders = orders.filter((order) => order.id != req.params.id);
-    fs.writeFile(ordersFilePath, JSON.stringify(updatedOrders), function (err) {
-      if (err) {
-        throw err;
-      } else {
-        res.status(200).send({
-          message: `Deleting order ${req.params.id}`,
-        });
-      }
-    });
-  } else {
-    res.status(404).send({ message: "Order not found" });
+router.delete("/:id", async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (order) {
+      res
+        .status(200)
+        .json({ message: `Order ${req.params.id} deleted successfully` });
+    } else {
+      res.status(404).json({ message: "Order not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting order", error });
+  }
+});
+
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const orders = await Order.find({ user_id: userId }).sort({ date: -1 });
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Error fetching orders", error });
   }
 });
 

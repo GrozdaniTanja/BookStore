@@ -75,7 +75,7 @@ function CartPage() {
       //set new cart value
       setTotalCartValue(
         totalCartValue -
-          array[cartItemIndex].quantity * array[cartItemIndex].price,
+          array[cartItemIndex].quantity * array[cartItemIndex].price
       );
       //set local storage with new array
       let orders = array.map((item) => arrayToLocalStorage(item));
@@ -134,7 +134,7 @@ function CartPage() {
 
     let order = {
       data: {
-        user: currentUser.id,
+        user: currentUser._id,
         delivery_address: { ...deliveryAddress },
         billing_address: { ...billingAddress },
         items: orders,
@@ -144,26 +144,45 @@ function CartPage() {
 
     if (form.checkValidity()) {
       fetch(`${BASE_URL}/orders`, {
-        method: "post",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(order),
-      }).then((data) => {
-        if (data.status === 200) {
-          setError(false);
-          setErrorMessage("");
-          setShow(true);
-          setCartItemsNumber(0);
-          setTimeout(() => {
-            localStorage.removeItem("items");
-          });
-        } else {
+      })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            setError(false);
+            setErrorMessage("");
+            setShow(true);
+            setCartItemsNumber(0);
+            setTimeout(() => {
+              localStorage.removeItem("items");
+            }, 1000);
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          if (data && data.message) {
+            setError(true);
+            setErrorMessage(
+              data.message || "An error occurred! Please try again."
+            );
+            setShow(true);
+          }
+        })
+        .catch((error) => {
           setError(true);
-          setErrorMessage("An error occured! Please try again.");
+          setErrorMessage(
+            "A network error occurred. Please check your internet connection or try again."
+          );
           setShow(true);
-        }
-      });
+        });
+    } else {
+      setError(true);
+      setErrorMessage("Please fill in all required fields correctly.");
+      setShow(true);
     }
   };
 

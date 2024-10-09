@@ -1,4 +1,3 @@
-let createError = require("http-errors");
 let express = require("express");
 let path = require("path");
 let cors = require("cors");
@@ -41,10 +40,8 @@ app.use("/orders", ordersRouter);
 app.use("/auth", authRouter);
 
 app.use((req, res, next) => {
-    console.log('Request received:', req.method, req.path);
-    next();
-  });
-  
+  next();
+});
 
 app.use(function (req, res, next) {
   res.status(404).json({ error: "Route not found" });
