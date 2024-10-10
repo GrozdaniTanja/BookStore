@@ -2,27 +2,60 @@
 
 Webshop application developed using ReactJS, CSS, React-Bootstrap, Font Awesome Icons.
 
+Live demo on Vercel:
+https://book-store-frontend-delta-tawny.vercel.app/
+
 ### Application has two main components:
 
 - REST API (webshop-api)
 - Client App (webshop-app)
 
-### Features of bookshop app:
+### Functionalities:
 
-- Navbar and footer
 - Register and login forms
+- Search Books
+- Filter Books
+- Administrator role for deleting, editing and adding books, delete accounts, view all orders
 - Validations
-- Administrator role for editing and adding books, delete accounts
 - Edit profile information
 - Breadcrumbs
 - Shopping cart
-- Filters
+- Purchase books
 - Order History
 
-# Install and run instructions
+## Install and Run Instructions
 
-- `npm install -g nodemon`. Nodemon is a tool that helps Node.js based application development by automatically restarting the node application when file changes are detected.
-- `npm install` in each component
+### 1. Install Nodemon Globally
+
+Nodemon is a tool that automatically restarts your Node.js application when file changes are detected. To install it globally, run:
+
+```
+npm install -g nodemon
+```
+
+### 2. Install Dependencies
+
+Navigate to both the webshop-api and webshop-app directories and install their dependencies:
+
+```
+npm install
+```
+
+### 3. Set Up Environment Variables
+
 - In the root of the webshop-app directory, create a .env file and add the following:
-  `REACT_APP_API_URL=http://localhost:3001`
-- `npm start` in each component. REST API will run on [http://localhost:3001](http://localhost:3001). Open [http://localhost:3000](http://localhost:3000) to view client app in your browser
+  ```
+  REACT_APP_API_URL=http://localhost:3001
+  ```
+- In the root of the webshop-api directory, create another .env file and add the MongoDB connection string:
+  ```
+  MONGODB_URI='mongodb+srv://newuser:RUqqvw3rI4QIzTJP@bookstore-react-app.vzalg.mongodb.net/?retryWrites=true&w=majority&appName=bookstore-react-app
+  ```
+
+### 4. Run the Application
+
+- Start the REST API:
+  In the webshop-api folder, run: `npm start`. The REST API will be available at http://localhost:3001.
+
+- Start the Client Application:
+  In the webshop-app folder, run: `npm start`. Open http://localhost:3000 in your browser to view the client application.
