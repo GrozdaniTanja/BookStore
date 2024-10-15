@@ -23,7 +23,7 @@ function DeleteUserModal({ onHide, deleteUser, show }) {
         <Button variant="secondary" onClick={onHide}>
           Close
         </Button>
-        <Button variant="danger" onClick={deleteUser}>
+        <Button variant="danger" onClick={() => { deleteUser(); onHide(); }}>
           Delete user
         </Button>
       </Modal.Footer>
