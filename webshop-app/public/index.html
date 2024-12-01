@@ -31,17 +31,20 @@
     />
 
     <title>BT-Bookstore</title>
-    <!-- Browsee integration -->
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-VDHFMRD45N"
+    ></script>
     <script>
-      window._browsee =
-        window._browsee ||
-        function () {
-          (_browsee.q = _browsee.q || []).push(arguments);
-        };
-      _browsee("init", "85f3c5521489998ab58013135711a5c153ab233b60c6b032");
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-VDHFMRD45N");
     </script>
-    <script async src="https://cdn.browsee.io/js/browsee.min.js"></script>
-    <!-- End of Browsee integration -->
   </head>
 
   <body>
