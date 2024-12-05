@@ -1,0 +1,60 @@
+{
+  "successfulLogin": {
+    "email": "testuser@gmail.com",
+    "password": "user123"
+  },
+  "unsuccessfulLogin": {
+    "email": "blabla@gmail.com",
+    "password": "blabla123"
+  },
+  "successfulRegistration": {
+    "username": "testuser",
+    "firstName": "testuser",
+    "lastName": "testuser",
+    "email": "testuser@gmail.com",
+    "password": "user123",
+    "confirmPassword": "user123"
+  },
+  "unsuccessfulRegistration": {
+    "username": "admin",
+    "firstName": "admin",
+    "lastName": "admin",
+    "email": "admin@bookstore.com",
+    "password": "admin123",
+    "confirmPassword": "admin123"
+  },
+
+  "successfulOrder": {
+    "user": {
+      "id": "675183597490aabee5b6498c",
+      "name": "John Doe",
+      "username": "johndoe",
+      "email": "john.doe@example.com",
+      "address": {
+        "street": "123 Main St",
+        "suite": "Apt 4B",
+        "city": "New York",
+        "zipcode": "10001"
+      },
+      "phone": "555-1234"
+    },
+    "cartItems": [
+      {
+        "id": "1",
+        "name": "Book 1",
+        "price": 10,
+        "quantity": 2
+      },
+      {
+        "id": "2",
+        "name": "Book 2",
+        "price": 15,
+        "quantity": 1
+      }
+    ],
+    "orderResponse": {
+      "status": 200,
+      "message": "Order placed successfully"
+    }
+  }
+}
