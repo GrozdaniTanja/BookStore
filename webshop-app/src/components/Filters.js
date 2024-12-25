@@ -1,13 +1,25 @@
+/* global hj */
 import { useState } from "react";
 import { ImSearch } from "react-icons/im";
 import { Offcanvas, Button } from "react-bootstrap";
 import "../css/Filters.css";
 
-function Filters({ filters, setFilters, handleChange, handleReset }) {
+function Filters({ filters, setFilters, handleChange, handleReset, pageType }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+
+    // hotjar event
+    if (typeof hj === "function") {
+      const eventName = `filter_used_${pageType}`;
+      hj("event", eventName);
+      console.log(`Hotjar event '${eventName}' triggered!`);
+    } else {
+      console.error("Hotjar is not loaded.");
+    }
+  };
 
   return (
     <div>

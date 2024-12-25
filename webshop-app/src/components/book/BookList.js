@@ -21,6 +21,7 @@ function BookList({
         setFilters={setFilters}
         handleChange={handleChange}
         handleReset={handleReset}
+        pageType={"A"}
       />
       <div className="container mt-3 mb-3">
         <div className="row" id="book-row">
