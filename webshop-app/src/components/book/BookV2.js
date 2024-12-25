@@ -219,8 +219,8 @@ function BookV2({
                   display: "flex",
                   alignItems: "center",
                 }}
-              >
                 onClick={handleSeeDetails}
+              >
                 <FaEye className="me-2" />
                 See details
               </span>
