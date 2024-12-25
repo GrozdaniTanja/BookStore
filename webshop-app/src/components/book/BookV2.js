@@ -1,3 +1,4 @@
+/* global hj */
 import React, { useState } from "react";
 import EditBookModal from "./EditBookModal";
 import DeleteBookModal from "./DeleteBookModal";
@@ -40,6 +41,7 @@ function BookV2({
   };
 
   const handleAddToCart = (id) => {
+    hj("event", "add_to_cart_B");
     let cartItems = JSON.parse(localStorage.getItem("items"));
     if (cartItems) {
       let count = 0;
@@ -65,6 +67,10 @@ function BookV2({
       setCartItemsNumber(cartItemsNumber + 1);
     }
     setShow(true);
+  };
+
+  const handleSeeDetails = () => {
+    hj("event", "details_viewed_B");
   };
 
   return (
@@ -214,6 +220,7 @@ function BookV2({
                   alignItems: "center",
                 }}
               >
+                onClick={handleSeeDetails}
                 <FaEye className="me-2" />
                 See details
               </span>

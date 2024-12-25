@@ -1,3 +1,4 @@
+/* global hj */
 import React from "react";
 import EditBookModal from "./EditBookModal";
 import DeleteBookModal from "./DeleteBookModal";
@@ -40,6 +41,7 @@ function Book({
   };
 
   const handleAddToCart = (id) => {
+    hj("event", "add_to_cart_A");
     let cartItems = JSON.parse(localStorage.getItem("items"));
     if (cartItems) {
       let count = 0;
@@ -65,6 +67,10 @@ function Book({
       setCartItemsNumber(cartItemsNumber + 1);
     }
     setShow(true);
+  };
+
+  const handleSeeDetails = () => {
+    hj("event", "details_viewed_A");
   };
 
   return (
@@ -131,7 +137,9 @@ function Book({
           )}
           <div className="actionButtons">
             <LinkContainer to={"/books/" + name}>
-              <Button variant="danger">See details &gt;</Button>
+              <Button variant="danger" onClick={handleSeeDetails}>
+                See details &gt;
+              </Button>
             </LinkContainer>
             {quantity > 0 ? (
               <button

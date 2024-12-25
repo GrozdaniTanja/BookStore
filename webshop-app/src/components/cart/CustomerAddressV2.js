@@ -1,3 +1,4 @@
+/* global hj */
 import React, { useState, useEffect } from "react";
 import Address from "./AddressV2";
 import Form from "react-bootstrap/Form";
@@ -15,6 +16,12 @@ function CustomerAddressV2({
   useEffect(() => {
     setLocalDeliveryAddress(deliveryAddress);
   }, [deliveryAddress]);
+
+  const placeOrderB = (e) => {
+    e.preventDefault();
+    placeOrder(e);
+    hj("event", "order_submitted_B");
+  };
 
   return (
     <>
@@ -99,7 +106,7 @@ function CustomerAddressV2({
       </div>
 
       <Form
-        onSubmit={(e) => placeOrder(e)}
+        onSubmit={(e) => placeOrderB(e)}
         className="p-4 address-form shadow-sm rounded bg-light"
         noValidate
         validated={validated}

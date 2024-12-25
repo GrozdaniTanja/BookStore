@@ -1,3 +1,4 @@
+/* global hj */
 import Address from "./Address";
 import Form from "react-bootstrap/Form";
 
@@ -8,6 +9,11 @@ function CustomerAddress({
   deliveryAddress,
   validated,
 }) {
+  const placeOrderA = (e) => {
+    e.preventDefault();
+    placeOrder(e);
+    hj("event", "order_submitted_A");
+  };
   return (
     <>
       {" "}
@@ -16,7 +22,7 @@ function CustomerAddress({
         <h3>Select Address</h3>
       </div>
       <Form
-        onSubmit={(e) => placeOrder(e)}
+        onSubmit={(e) => placeOrderA(e)}
         className="p-2 address-form"
         noValidate
         validated={validated}
