@@ -20,7 +20,13 @@ function CustomerAddressV2({
   const placeOrderB = (e) => {
     e.preventDefault();
     placeOrder(e);
-    hj("event", "order_submitted_B");
+    if (typeof hj === "function") {
+      const eventName = "order_submitted_B";
+      hj("event", eventName);
+      console.log(`Hotjar event '${eventName}' triggered!`);
+    } else {
+      console.error("Hotjar is not loaded.");
+    }
   };
 
   return (

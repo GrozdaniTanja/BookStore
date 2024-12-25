@@ -41,7 +41,13 @@ function Book({
   };
 
   const handleAddToCart = (id) => {
-    hj("event", "add_to_cart_A");
+    if (typeof hj === "function") {
+      const eventName = "add_to_cart_A";
+      hj("event", eventName);
+      console.log(`Hotjar event '${eventName}' triggered!`);
+    } else {
+      console.error("Hotjar is not loaded.");
+    }
     let cartItems = JSON.parse(localStorage.getItem("items"));
     if (cartItems) {
       let count = 0;
@@ -70,7 +76,14 @@ function Book({
   };
 
   const handleSeeDetails = () => {
-    hj("event", "details_viewed_A");
+    // Hotjar event with debugging
+    if (typeof hj === "function") {
+      const eventName = "details_viewed_A";
+      hj("event", eventName);
+      console.log(`Hotjar event '${eventName}' triggered!`);
+    } else {
+      console.error("Hotjar is not loaded.");
+    }
   };
 
   return (

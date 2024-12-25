@@ -12,7 +12,14 @@ function CustomerAddress({
   const placeOrderA = (e) => {
     e.preventDefault();
     placeOrder(e);
-    hj("event", "order_submitted_A");
+
+    if (typeof hj === "function") {
+      const eventName = "order_submitted_A";
+      hj("event", eventName);
+      console.log(`Hotjar event '${eventName}' triggered!`);
+    } else {
+      console.error("Hotjar is not loaded.");
+    }
   };
   return (
     <>
