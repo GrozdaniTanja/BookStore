@@ -2,7 +2,7 @@ import FooterComponent from "../components/FooterComponent";
 import NavbarComponent from "../components/NavbarComponent";
 import AddBookModal from "../components/book/AddBookModal";
 import Breadcrumbs from "../components/Breadcrumbs";
-import BookList from "../components/book/BookList";
+import BookListV2 from "../components/book/BookListV2";
 import { Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -112,7 +112,7 @@ function StorePage() {
       />
       <>
         <Breadcrumbs />
-        <BookList
+        <BookListV2
           cartItemsNumber={cartItemsNumber}
           setCartItemsNumber={setCartItemsNumber}
           isAdmin={isAdmin}

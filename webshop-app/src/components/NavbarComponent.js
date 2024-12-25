@@ -72,6 +72,11 @@ function NavbarComponent(props) {
                       Books
                     </Button>
                   </LinkContainer>
+                  <LinkContainer to="/books-v2">
+                    <Button variant="link" className="nav-item">
+                      Books V2
+                    </Button>
+                  </LinkContainer>
                   {admin && (
                     <LinkContainer to="/users">
                       <Button variant="link" className="nav-item">
@@ -87,6 +92,13 @@ function NavbarComponent(props) {
                       Cart <Badge bg="secondary">
                         {props.cartItemsNumber}
                       </Badge>{" "}
+                    </Button>
+                  </LinkContainer>
+                  <LinkContainer to="/cart-v2">
+                    <Button variant="link" className="nav-item">
+                      <BsCartFill />
+                      Cart V2{" "}
+                      <Badge bg="secondary">{props.cartItemsNumber}</Badge>{" "}
                     </Button>
                   </LinkContainer>
                   {loggedIn ? (
